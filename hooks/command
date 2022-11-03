@@ -22,7 +22,7 @@ fi
 
 # Check for valid `target_type`
 case "${TARGET_TYPE}" in
-    simple | template | command)
+    simple | template | command | custom)
         ;;
     *)
         echo "ERROR: Invalid target_type value '${TARGET_TYPE}'" >&2
@@ -131,4 +131,10 @@ if [[ "${TARGET_TYPE}" == "command" ]]; then
         echo "Triggering command pipeline ${TARGET} '${PP_PATH}'"
         ${TARGET} "${PP_PATH}"
     done
+fi
+
+# If we are a "custom" target, we won't do anything but simply pass along the `MATCHED_FILES` and let the custom target deal with it.
+if [[ "${TARGET_TYPE}" == "custom" ]]; then
+    echo "Triggering custom pipeline ${TARGET} '${MATCHED_FILES[@]}'"
+    ${TARGET} "${MATCHED_FILES[@]}"
 fi

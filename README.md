@@ -6,7 +6,7 @@
 To use this plugin, you will typically have a family of pipelines in `.buildkite/`, each meant to be triggered if certain files have been touched in the current git commit/pull request.
 If you have multiple pipelines to trigger, list multiple instances of the plugin, as each instance can only trigger a single `target`.
 Each `target` watches for a set of paths, and has a certain type.
-As of this writing, the three types of targets are `simple`, `template` and `comand`:
+As of this writing, the four types of targets are `simple`, `template`, `comand` and `custom`:
 
 * A `simple` target is one that gets triggered if any of the files it is watching for are modified.
   There is no templating, no way to know which file triggered the pipeline, etc...
@@ -16,7 +16,10 @@ As of this writing, the three types of targets are `simple`, `template` and `com
   If multiple paths trigger a `template` pipeline, it is triggered once for each path (subject to `path_processor` alterations, detailed below).
 
 * A `command` target is one that invokes a command once for each path (subject to the `path_processor` alterations, detailed below) and is expected to generate pipelines and pass them to `buildkite-agent pipeline upload` itself.
-  This command type is by far the most flexible and allows for truly devious pipelines to be created.
+  This command type is very flexible and allows for truly devious pipelines to be created.
+
+* A `custom` target is one that invokes a custom script/logic for all the paths (subject to the `path_processor` alterations, detailed below) and is expected to iterate through all the matched paths, generate pipelines and pass them to `buildkite-agent pipeline upload` itself (at the very least.)
+  This target type is by far the most flexible and allows for truly devious and complex pipelines to be created, whose scope of operation is not limited to each path, but extends to the entire pipeline itself.
 
 As mentioned above, `template` and `command` targets are, by default, invoked once for each modified file.
 To control this behavior, the user may provide a `path_processor` argument to munge the paths in an intelligent way.
